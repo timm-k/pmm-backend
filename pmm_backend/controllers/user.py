@@ -1,24 +1,48 @@
 from sqlalchemy.ext.declarative import DeclarativeMeta
-from pmm_backend import api
+from pmm_backend import api, settings, db
 from pmm_backend.models import models
 from flask_restx import Resource, fields, marshal
 from flask_bcrypt import Bcrypt
-
+import time
 import json
 
 
 class UserController():
     @staticmethod
-    def verify_login(email, password):
+    def add_user(role_id, email, password, first_name, last_name):
+        bcrypt = Bcrypt(api)
+        hash = bcrypt.generate_password_hash(password)
+
+        user = models.User(role_id=role_id, email=email, first_name=first_name,
+                           last_name=last_name, password_hash=hash)
+
+        db.session.add(user)
+        db.session.commit()
+
+    @staticmethod
+    def verify_login_valid(email, password):
         if models.User.query.filter_by(email=email).count() == 0:
             return False
-
         found_user = models.User.query.filter_by(email=email).first()
 
         bcrypt = Bcrypt(api)
         pass_valid = bcrypt.check_password_hash(found_user.pass_hash, password)
 
-        return json.dumps(pass_valid)
+        return pass_valid
+
+    @staticmethod
+    def try_login(session, email, password):
+        login_valid = UserController.verify_login_valid(email, password)
+
+        if login_valid:
+            found_user = models.User.query.filter_by(email=email).first()
+
+            user_id = found_user.user_id
+            session['user_id'] = user_id
+            session['session_expire_timestamp'] = int(time.time()) + settings.SESSION_TIMEOUT
+            return True
+        else:
+            return False
 
     def is_logged_in(self):
         pass
