@@ -3,13 +3,12 @@
 from sqlalchemy import Column, ForeignKey, Table, Text
 from sqlalchemy.dialects.mysql import INTEGER
 from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
+from pmm_backend import db
 
-Base = declarative_base()
-metadata = Base.metadata
+metadata = db.metadata
 
 
-class Employee(Base):
+class Employee(db.Model):
     __tablename__ = 'employees'
 
     employee_id = Column(INTEGER(11), primary_key=True)
@@ -17,7 +16,7 @@ class Employee(Base):
     last_name = Column(Text(collation='utf8mb4_unicode_ci'))
 
 
-class Project(Base):
+class Project(db.Model):
     __tablename__ = 'projects'
 
     project_id = Column(INTEGER(11), primary_key=True)
@@ -27,7 +26,7 @@ class Project(Base):
     end_timestamp = Column(INTEGER(11))
 
 
-class Role(Base):
+class Role(db.Model):
     __tablename__ = 'roles'
 
     role_id = Column(INTEGER(11), primary_key=True)
@@ -35,7 +34,7 @@ class Role(Base):
     description = Column(Text(collation='utf8mb4_unicode_ci'))
 
 
-class TeamRole(Base):
+class TeamRole(db.Model):
     __tablename__ = 'team_roles'
 
     team_role_id = Column(INTEGER(11), primary_key=True)
@@ -45,7 +44,7 @@ class TeamRole(Base):
     work_packages = relationship('WorkPackage', secondary='work_package_roles')
 
 
-class Team(Base):
+class Team(db.Model):
     __tablename__ = 'teams'
 
     team_id = Column(INTEGER(11), primary_key=True)
@@ -53,7 +52,7 @@ class Team(Base):
     description = Column(Text(collation='utf8mb4_unicode_ci'))
 
 
-class TeamMember(Base):
+class TeamMember(db.Model):
     __tablename__ = 'team_members'
 
     team_member_id = Column(INTEGER(11), primary_key=True)
@@ -68,7 +67,7 @@ class TeamMember(Base):
     team_role = relationship('TeamRole')
 
 
-class User(Base):
+class User(db.Model):
     __tablename__ = 'users'
 
     user_id = Column(INTEGER(11), primary_key=True)
@@ -81,7 +80,7 @@ class User(Base):
     role = relationship('Role')
 
 
-class WorkPackage(Base):
+class WorkPackage(db.Model):
     __tablename__ = 'work_packages'
 
     word_package_id = Column(INTEGER(11), primary_key=True)

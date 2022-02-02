@@ -7,4 +7,5 @@ api.config.from_pyfile('settings.py')
 
 db = SQLAlchemy(api)
 
-from pmm_backend.controllers import user
+from pmm_backend import routes
+
