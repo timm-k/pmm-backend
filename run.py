@@ -1,12 +1,8 @@
-from flask import Flask
-
-app = Flask(__name__)
-
-
-@app.route('/')
-def hello_world():  # put application's code here
-    return 'Hello World!'
-
+from pmm_backend import api, settings
+from waitress import serve
 
 if __name__ == '__main__':
-    app.run()
+    if settings.DEBUG:
+        api.run(debug=True)
+    else:
+        serve(api, host='127.0.0.1', port=5000)
