@@ -1,3 +1,5 @@
+import json
+
 from pmm_backend import api
 from pmm_backend.controllers.user import UserController
 from pmm_backend.controllers.employee import EmployeeController
@@ -25,9 +27,9 @@ def add_user():
     first_name = escape(request.form.get('first_name'))
     last_name = escape(request.form.get('last_name'))
 
-    status = UserController.add_user(role_id=role_id, email=email, password=password, first_name=first_name,
+    UserController.add_user(role_id=role_id, email=email, password=password, first_name=first_name,
                                      last_name=last_name)
-    return status
+    return "True"
 
 
 @api.route('/employee/list')

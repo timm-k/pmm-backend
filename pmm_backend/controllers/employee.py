@@ -34,5 +34,5 @@ class EmployeeController:
 
     @staticmethod
     def delete_employee(employee_id):
-        models.Employee.query.filter_by(employee_id=employee_id).delete()
+        models.Employee.query.filter_by(employee_id=employee_id).first()
         db.session.commit()

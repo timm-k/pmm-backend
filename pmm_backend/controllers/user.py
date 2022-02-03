@@ -44,11 +44,31 @@ class UserController():
         else:
             return False
 
-    def is_logged_in(self):
-        pass
+    @staticmethod
+    def is_logged_in(session):
+        if 'user_id' not in session:
+            return False
 
-    def is_admin(self):
-        pass
+        expire_timestamp = session['session_expire_timestamp']
+        current_timestamp = int(time.time())
+
+        if current_timestamp > expire_timestamp:
+            return False
+
+        return True
+
+    @staticmethod
+    def is_admin(session):
+        if not UserController.is_logged_in(session):
+            return False
+
+        user_id = session['user_id']
+        found_user = models.User.query.filter_by(user_id=user_id).first()
+        role_id = found_user.role_id
+
+        if role_id == 1:
+            return True
+        return False
 
     @staticmethod
     def list_users():
