@@ -19,7 +19,7 @@ def login_user():
     return status
 
 
-@api.route('/user/add', methods=['POST'])
+@api.route('/user', methods=['POST', 'PUT'])
 def add_user():
     role_id = int(request.form.get('role_id'))
     email = escape(request.form.get('email'))
@@ -27,9 +27,16 @@ def add_user():
     first_name = escape(request.form.get('first_name'))
     last_name = escape(request.form.get('last_name'))
 
-    UserController.add_user(role_id=role_id, email=email, password=password, first_name=first_name,
-                                     last_name=last_name)
-    return "True"
+    if request.method == 'POST':
+        UserController.add_user(role_id=role_id, email=email, password=password, first_name=first_name,
+                                         last_name=last_name)
+        return "True"
+
+    if request.method == 'PUT':
+        user_id = int(request.form.get('user_id'))
+        UserController.update_user(user_id=user_id, role_id=role_id, first_name=first_name, last_name=last_name,
+                                    password=password)
+        return "True"
 
 
 @api.route('/employee/list')
