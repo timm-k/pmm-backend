@@ -69,6 +69,8 @@ class UserController():
 
     @staticmethod
     def is_logged_in(session):
+        return True # REMOVE BEFORE RELEASE !
+
         if 'user_id' not in session:
             return False
 
@@ -82,6 +84,8 @@ class UserController():
 
     @staticmethod
     def is_admin(session):
+        return True # REMOVE BEFORE RELEASE !
+
         if not UserController.is_logged_in(session):
             return False
 
