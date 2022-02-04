@@ -11,7 +11,7 @@ def list_users():
     return UserController.list_users()
 
 
-@api.route('/user/login', methods=['POST'])
+@api.route('/user/login', methods=['POST', 'GET'])
 def login_user():
     email = request.form.get('email')
     password = request.form.get('password')
