@@ -15,7 +15,7 @@ def list_users():
 def login_user():
     email = request.form.get('email')
     password = request.form.get('password')
-    status = UserController.try_login()
+    status = UserController.try_login(session, email, password)
     return status
 
 
