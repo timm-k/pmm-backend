@@ -68,11 +68,20 @@ def add_employee():
 
 
 @api.route('/employee/<employee_id>', methods=['PUT'])
-def modify_employee():
-    first_name = escape(request.form.get('first_name'))
-    last_name = escape(request.form.get('last_name'))
+def update_employee():
+    employee_id = request.form.get('employee_id')
+    if employee_id is not None:
+        employee_id = int(employee_id)
 
-    status = EmployeeController.modify_employee(first_name=first_name, last_name=last_name)
+    first_name = request.form.get('first_name')
+    if first_name is not None:
+        first_name = escape(first_name)
+
+    last_name = request.form.get('last_name')
+    if last_name is not None:
+        last_name = escape(last_name)
+
+    status = EmployeeController.update_employee(employee_id=employee_id, first_name=first_name, last_name=last_name)
     return status
 
 
