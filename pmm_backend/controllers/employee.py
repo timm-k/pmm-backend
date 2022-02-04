@@ -26,13 +26,16 @@ class EmployeeController:
         return json.dumps(marshal(all_employees, marshaller))
 
     @staticmethod
-    def modify_employee(first_name, last_name):
-        employee = models.Employee(first_name=first_name, last_name=last_name)
+    def update_employee(employee_id, first_name, last_name):
+        employee = models.Employee.query.filter_by(employee_id=employee_id)
+        if first_name is not None:
+            employee.first_name = first_name
+        if last_name is not None:
+            employee.last_name = last_name
 
-        db.session.add(employee)
         db.session.commit()
 
     @staticmethod
     def delete_employee(employee_id):
-        models.Employee.query.filter_by(employee_id=employee_id).first()
+        models.Employee.query.filter_by(employee_id=employee_id).delete()
         db.session.commit()
