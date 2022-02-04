@@ -15,8 +15,8 @@ def list_users():
 def login_user():
     email = request.form.get('email')
     password = request.form.get('password')
-    status = UserController.try_login()
-    return status
+    status = UserController.try_login(session, email, password)
+    return str(status)
 
 
 @api.route('/user', methods=['POST', 'PUT'])

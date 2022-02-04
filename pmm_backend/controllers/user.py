@@ -49,7 +49,7 @@ class UserController():
         found_user = models.User.query.filter_by(email=email).first()
 
         bcrypt = Bcrypt(api)
-        pass_valid = bcrypt.check_password_hash(found_user.pass_hash, password)
+        pass_valid = bcrypt.check_password_hash(found_user.password_hash, password)
 
         return pass_valid
 
