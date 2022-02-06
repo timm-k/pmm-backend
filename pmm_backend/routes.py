@@ -2,6 +2,7 @@ import json
 
 from pmm_backend import api
 from pmm_backend.controllers.user import UserController
+from pmm_backend.controllers.teams import TeamsController
 from pmm_backend.controllers.employee import EmployeeController
 from flask import redirect, request, session, escape
 
@@ -21,7 +22,6 @@ def login_user():
 
 @api.route('/user', methods=['POST', 'PUT'])
 def add_user():
-
     if not UserController.is_admin(session):
         return "no_permission"
 
@@ -43,13 +43,13 @@ def add_user():
 
     if request.method == 'POST':
         UserController.add_user(role_id=role_id, email=email, password=password, first_name=first_name,
-                                         last_name=last_name)
+                                last_name=last_name)
         return "True"
 
     if request.method == 'PUT':
         user_id = int(request.form.get('user_id'))
         UserController.update_user(user_id=user_id, role_id=role_id, first_name=first_name, last_name=last_name,
-                                    password=password, email=email)
+                                   password=password, email=email)
         return "True"
 
 
@@ -89,3 +89,40 @@ def update_employee():
 def delete_employee(employee_id):
     status = EmployeeController.delete_employee(employee_id=employee_id)
     return status
+
+
+@api.route('/team/list')
+def list_teams():
+    return TeamsController.list_teams()
+
+
+@api.route('/team', methods=['POST'])
+def add_team():
+    name = request.form.get('name')
+    if name is not None:
+        name = escape(name)
+
+    description = request.form.get('description')
+    if description is not None:
+        description = escape(description)
+
+    TeamsController.add_team(name=name, description=description)
+    return "True"
+
+@api.route('/team/<int:team_id>', methods=['PUT'])
+def update_team(team_id):
+    name = request.form.get('name')
+    if name is not None:
+        name = escape(name)
+
+    description = request.form.get('description')
+    if description is not None:
+        description = escape(description)
+
+    TeamsController.update_team(team_id=team_id, name=name, description=description)
+    return "True"
+
+@api.route('/team/<int:team_id>', methods=['DELETE'])
+def delete_team(team_id):
+    TeamsController.delete_team(team_id=team_id)
+    return "True"
