@@ -1,9 +1,9 @@
 import json
-
 from pmm_backend import api
 from pmm_backend.controllers.user import UserController
 from pmm_backend.controllers.teams import TeamsController
 from pmm_backend.controllers.employee import EmployeeController
+from pmm_backend.controllers.team_role import TeamRolesController
 from flask import redirect, request, session, escape
 
 
@@ -109,6 +109,7 @@ def add_team():
     TeamsController.add_team(name=name, description=description)
     return "True"
 
+
 @api.route('/team/<int:team_id>', methods=['PUT'])
 def update_team(team_id):
     name = request.form.get('name')
@@ -122,7 +123,51 @@ def update_team(team_id):
     TeamsController.update_team(team_id=team_id, name=name, description=description)
     return "True"
 
+
 @api.route('/team/<int:team_id>', methods=['DELETE'])
 def delete_team(team_id):
     TeamsController.delete_team(team_id=team_id)
+    return "True"
+
+
+###########
+# Team Roles
+###########
+
+@api.route('/team/role/list')
+def list_team_roles():
+    return TeamRolesController.list_team_roles()
+
+
+@api.route('/team/role', methods=['POST'])
+def add_team_role():
+    name = request.form.get('name')
+    if name is not None:
+        name = escape(name)
+
+    description = request.form.get('description')
+    if description is not None:
+        description = escape(description)
+
+    TeamRolesController.add_team_role(name=name, description=description)
+    return "True"
+
+
+@api.route('/team/role/<int:team_role_id>', methods=['PUT'])
+def update_team_role(team_role_id):
+    name = request.form.get('name')
+    if name is not None:
+        name = escape(name)
+
+    description = request.form.get('description')
+    if description is not None:
+        description = escape(description)
+
+    TeamRolesController.update_team_role(team_role_id=team_role_id, name=name, description=description)
+    return "True"
+
+
+@api.route('/team/role/<int:team_role_id>', methods=['DELETE'])
+def delete_team_role(team_role_id):
+    TeamRolesController.delete_team_role(team_role_id=team_role_id)
     return "True"
