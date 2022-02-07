@@ -6,6 +6,9 @@ from pmm_backend.controllers.employee import EmployeeController
 from pmm_backend.controllers.team_role import TeamRolesController
 from flask import redirect, request, session, escape
 
+##########################
+# Users
+##########################
 
 @api.route('/user/list')
 def list_users():
@@ -53,6 +56,12 @@ def add_user():
         return "True"
 
 
+
+##########################
+# Employees
+##########################
+
+
 @api.route('/employee/list')
 def list_employees():
     return EmployeeController.list_employees()
@@ -89,6 +98,11 @@ def update_employee():
 def delete_employee(employee_id):
     status = EmployeeController.delete_employee(employee_id=employee_id)
     return status
+
+
+##########################
+# Teams
+##########################
 
 
 @api.route('/team/list')
@@ -130,9 +144,9 @@ def delete_team(team_id):
     return "True"
 
 
-###########
+##########################
 # Team Roles
-###########
+##########################
 
 @api.route('/team/role/list')
 def list_team_roles():
