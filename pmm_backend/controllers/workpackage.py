@@ -17,20 +17,20 @@ class PackageController:
             'end_timestamp': fields.Integer,
         }
 
-        all_packages = models.Project.query.all()
+        all_packages = models.WorkPackage.query.all()
         return json.dumps(marshal(all_packages, marshaller))
 
     @staticmethod
     def add_package(project_id, name, description, start_timestamp, end_timestamp):
-        project = models.Project(project_id=project_id, name=name, description=description,
-                                 start_timestamp=start_timestamp, end_timestamp=end_timestamp)
+        package = models.WorkPackage(project_id=project_id, name=name, description=description,
+                                     start_timestamp=start_timestamp, end_timestamp=end_timestamp)
 
-        db.session.add(project)
+        db.session.add(package)
         db.session.commit()
 
     @staticmethod
     def update_package(word_package_id, project_id, name, description, start_timestamp, end_timestamp):
-        package = models.WorkPackage.query.filter_by(word_package_id=word_package_id)
+        package = models.WorkPackage.query.filter_by(word_package_id=word_package_id).first()
 
         if project_id is not None:
             package.project_id = project_id

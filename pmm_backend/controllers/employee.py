@@ -27,7 +27,7 @@ class EmployeeController:
 
     @staticmethod
     def update_employee(employee_id, first_name, last_name):
-        employee = models.Employee.query.filter_by(employee_id=employee_id)
+        employee = models.Employee.query.filter_by(employee_id=employee_id).first()
         if first_name is not None:
             employee.first_name = first_name
         if last_name is not None:

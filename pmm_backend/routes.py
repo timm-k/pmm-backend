@@ -7,6 +7,7 @@ from pmm_backend.controllers.team_role import TeamRolesController
 from pmm_backend.controllers.workpackage import PackageController
 from pmm_backend.controllers.project import ProjectController
 from flask import redirect, request, session, escape
+import time
 
 
 ##########################
@@ -73,15 +74,12 @@ def add_employee():
     first_name = escape(request.form.get('first_name'))
     last_name = escape(request.form.get('last_name'))
 
-    status = EmployeeController.add_employee(first_name=first_name, last_name=last_name)
-    return status
+    EmployeeController.add_employee(first_name, last_name)
+    return "True"
 
 
 @api.route('/employee/<int:employee_id>', methods=['PUT'])
-def update_employee():
-    employee_id = request.form.get('employee_id')
-    if employee_id is not None:
-        employee_id = int(employee_id)
+def update_employee(employee_id):
 
     first_name = request.form.get('first_name')
     if first_name is not None:
@@ -91,14 +89,14 @@ def update_employee():
     if last_name is not None:
         last_name = escape(last_name)
 
-    status = EmployeeController.update_employee(employee_id=employee_id, first_name=first_name, last_name=last_name)
-    return status
+    EmployeeController.update_employee(employee_id, first_name, last_name)
+    return "True"
 
 
 @api.route('/employee/<int:employee_id>', methods=['DELETE'])
 def delete_employee(employee_id):
-    status = EmployeeController.delete_employee(employee_id=employee_id)
-    return status
+    EmployeeController.delete_employee(employee_id)
+    return "True"
 
 
 ##########################
@@ -200,20 +198,15 @@ def list_projects():
 def add_project():
     name = escape(request.form.get('name'))
     description = escape(request.form.get('description'))
-    start_timestamp = escape(request.form.get('start_timestamp'))
-    end_timestamp = escape(request.form.get('end_timestamp'))
+    start_timestamp = int(time.time())
+    end_timestamp = int(time.time())
 
-    status = ProjectController.add_project(name=name, description=description,
-                                           start_timestamp=start_timestamp, end_timestamp=end_timestamp)
-    return status
+    ProjectController.add_project(name, description, start_timestamp, end_timestamp)
+    return "True"
 
 
 @api.route('/project/<int:project_id>', methods=['PUT'])
-def update_project():
-    project_id = request.form.get('project_id')
-    if project_id is not None:
-        project_id = int(project_id)
-
+def update_project(project_id):
     name = request.form.get('name')
     if name is not None:
         name = escape(name)
@@ -230,16 +223,14 @@ def update_project():
     if end_timestamp is not None:
         end_timestamp = escape(end_timestamp)
 
-    status = ProjectController.update_project(project_id=project_id, name=name,
-                                              description=description, start_timestamp=start_timestamp,
-                                              end_timestamp=end_timestamp )
-    return status
+    ProjectController.update_project(project_id, name, description, start_timestamp, end_timestamp)
+    return "True"
 
 
 @api.route('/project/<int:project_id>', methods=['DELETE'])
 def delete_project(project_id):
-    status = ProjectController.delete_project(project_id=project_id)
-    return status
+    ProjectController.delete_project(project_id)
+    return "True"
 
 
 ##########################
@@ -253,21 +244,18 @@ def list_package():
 
 @api.route('/package/add', methods=['POST'])
 def add_package():
+    project_id = escape(request.form.get('project_id'))
     name = escape(request.form.get('name'))
     description = escape(request.form.get('description'))
-    start_timestamp = escape(request.form.get('start_timestamp'))
-    end_timestamp = escape(request.form.get('end_timestamp'))
+    start_timestamp = int(time.time())
+    end_timestamp = int(time.time())
 
-    status = PackageController.add_package(name=name, description=description,
-                                           start_timestamp=start_timestamp, end_timestamp=end_timestamp)
-    return status
+    PackageController.add_package(project_id, name, description, start_timestamp, end_timestamp)
+    return "True"
 
 
 @api.route('/package/<int:word_package_id>', methods=['PUT'])
-def update_package():
-    word_package_id = request.form.get('word_package_id')
-    if word_package_id is not None:
-        word_package_id = int(word_package_id)
+def update_package(word_package_id):
 
     project_id = request.form.get('project_id')
     if project_id is not None:
@@ -289,15 +277,12 @@ def update_package():
     if end_timestamp is not None:
         end_timestamp = escape(end_timestamp)
 
-    status = PackageController.update_package(word_package_id=word_package_id,
-                                              project_id=project_id, name=name,
-                                              description=description, start_timestamp=start_timestamp,
-                                              end_timestamp=end_timestamp)
-    return status
+    PackageController.update_package(word_package_id, project_id, name, description, start_timestamp,end_timestamp)
+    return "True"
 
 
 @api.route('/package/<int:word_package_id>', methods=['DELETE'])
 def delete_package(word_package_id):
-    status = PackageController.delete_package(word_package_id=word_package_id)
-    return status
+    PackageController.delete_package(word_package_id)
+    return "True"
 

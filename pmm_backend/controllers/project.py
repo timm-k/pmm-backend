@@ -31,7 +31,7 @@ class ProjectController:
 
     @staticmethod
     def update_project(project_id, name, description, start_timestamp, end_timestamp):
-        project = models.Project.query.filter_by(project_id=project_id)
+        project = models.Project.query.filter_by(project_id=project_id).first()
 
         if name is not None:
             project.name = name
