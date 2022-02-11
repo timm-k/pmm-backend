@@ -1,15 +1,12 @@
 import json
+
 from pmm_backend import api
 from pmm_backend.controllers.user import UserController
-from pmm_backend.controllers.teams import TeamsController
 from pmm_backend.controllers.employee import EmployeeController
-from pmm_backend.controllers.team_role import TeamRolesController
+from pmm_backend.controllers.project import ProjectController
+from pmm_backend.controllers.workpackage import PackageController
 from flask import redirect, request, session, escape
 
-
-##########################
-# Users
-##########################
 
 @api.route('/user/list')
 def list_users():
@@ -26,6 +23,7 @@ def login_user():
 
 @api.route('/user', methods=['POST', 'PUT'])
 def add_user():
+
     if not UserController.is_admin(session):
         return "no_permission"
 
@@ -47,19 +45,15 @@ def add_user():
 
     if request.method == 'POST':
         UserController.add_user(role_id=role_id, email=email, password=password, first_name=first_name,
-                                last_name=last_name)
+                                         last_name=last_name)
         return "True"
 
     if request.method == 'PUT':
         user_id = int(request.form.get('user_id'))
         UserController.update_user(user_id=user_id, role_id=role_id, first_name=first_name, last_name=last_name,
-                                   password=password, email=email)
+                                    password=password, email=email)
         return "True"
 
-
-##########################
-# Employees
-##########################
 
 @api.route('/employee/list')
 def list_employees():
@@ -75,7 +69,7 @@ def add_employee():
     return status
 
 
-@api.route('/employee/<employee_id>', methods=['PUT'])
+@api.route('/employee/<int:employee_id>', methods=['PUT'])
 def update_employee():
     employee_id = request.form.get('employee_id')
     if employee_id is not None:
@@ -93,23 +87,35 @@ def update_employee():
     return status
 
 
-@api.route('/employee/<employee_id>', methods=['DELETE'])
+@api.route('/employee/<int:employee_id>', methods=['DELETE'])
 def delete_employee(employee_id):
     status = EmployeeController.delete_employee(employee_id=employee_id)
     return status
 
 
-##########################
-# Teams
-##########################
-
-@api.route('/team/list')
-def list_teams():
-    return TeamsController.list_teams()
+@api.route('/project/list')
+def list_projects():
+    return ProjectController.list_projects()
 
 
-@api.route('/team', methods=['POST'])
-def add_team():
+@api.route('/project/add', methods=['POST'])
+def add_project():
+    name = escape(request.form.get('name'))
+    description = escape(request.form.get('description'))
+    start_timestamp = escape(request.form.get('start_timestamp'))
+    end_timestamp = escape(request.form.get('end_timestamp'))
+
+    status = ProjectController.add_project(name=name, description=description,
+                                           start_timestamp=start_timestamp, end_timestamp=end_timestamp)
+    return status
+
+
+@api.route('/project/<int:project_id>', methods=['PUT'])
+def update_project():
+    project_id = request.form.get('project_id')
+    if project_id is not None:
+        project_id = int(project_id)
+
     name = request.form.get('name')
     if name is not None:
         name = escape(name)
@@ -118,12 +124,53 @@ def add_team():
     if description is not None:
         description = escape(description)
 
-    TeamsController.add_team(name=name, description=description)
-    return "True"
+    start_timestamp = request.form.get('start_timestamp')
+    if start_timestamp is not None:
+        start_timestamp = escape(start_timestamp)
+
+    end_timestamp = request.form.get('end_timestamp')
+    if end_timestamp is not None:
+        end_timestamp = escape(end_timestamp)
+
+    status = ProjectController.update_project(project_id=project_id, name=name,
+                                              description=description, start_timestamp=start_timestamp,
+                                              end_timestamp=end_timestamp )
+    return status
 
 
-@api.route('/team/<int:team_id>', methods=['PUT'])
-def update_team(team_id):
+@api.route('/project/<int:project_id>', methods=['DELETE'])
+def delete_project(project_id):
+    status = ProjectController.delete_project(project_id=project_id)
+    return status
+
+
+@api.route('/package/list')
+def list_package():
+    return PackageController.list_packages()
+
+
+@api.route('/package/add', methods=['POST'])
+def add_package():
+    name = escape(request.form.get('name'))
+    description = escape(request.form.get('description'))
+    start_timestamp = escape(request.form.get('start_timestamp'))
+    end_timestamp = escape(request.form.get('end_timestamp'))
+
+    status = PackageController.add_package(name=name, description=description,
+                                           start_timestamp=start_timestamp, end_timestamp=end_timestamp)
+    return status
+
+
+@api.route('/package/<int:word_package_id>', methods=['PUT'])
+def update_project():
+    word_package_id = request.form.get('word_package_id')
+    if word_package_id is not None:
+        word_package_id = int(word_package_id)
+
+    project_id = request.form.get('project_id')
+    if project_id is not None:
+        project_id = int(project_id)
+
     name = request.form.get('name')
     if name is not None:
         name = escape(name)
@@ -132,54 +179,22 @@ def update_team(team_id):
     if description is not None:
         description = escape(description)
 
-    TeamsController.update_team(team_id=team_id, name=name, description=description)
-    return "True"
+    start_timestamp = request.form.get('start_timestamp')
+    if start_timestamp is not None:
+        start_timestamp = escape(start_timestamp)
+
+    end_timestamp = request.form.get('end_timestamp')
+    if end_timestamp is not None:
+        end_timestamp = escape(end_timestamp)
+
+    status = PackageController.update_package(word_package_id=word_package_id,
+                                              project_id=project_id, name=name,
+                                              description=description, start_timestamp=start_timestamp,
+                                              end_timestamp=end_timestamp)
+    return status
 
 
-@api.route('/team/<int:team_id>', methods=['DELETE'])
-def delete_team(team_id):
-    TeamsController.delete_team(team_id=team_id)
-    return "True"
-
-
-##########################
-# Team Roles
-##########################
-
-@api.route('/team/role/list')
-def list_team_roles():
-    return TeamRolesController.list_team_roles()
-
-
-@api.route('/team/role', methods=['POST'])
-def add_team_role():
-    name = request.form.get('name')
-    if name is not None:
-        name = escape(name)
-
-    description = request.form.get('description')
-    if description is not None:
-        description = escape(description)
-
-    TeamRolesController.add_team_role(name=name, description=description)
-    return "True"
-
-
-@api.route('/team/role/<int:team_role_id>', methods=['PUT'])
-def update_team_role(team_role_id):
-    name = request.form.get('name')
-    if name is not None:
-        name = escape(name)
-
-    description = request.form.get('description')
-    if description is not None:
-        description = escape(description)
-
-    TeamRolesController.update_team_role(team_role_id=team_role_id, name=name, description=description)
-    return "True"
-
-
-@api.route('/team/role/<int:team_role_id>', methods=['DELETE'])
-def delete_team_role(team_role_id):
-    TeamRolesController.delete_team_role(team_role_id=team_role_id)
-    return "True"
+@api.route('/package/<int:word_package_id>', methods=['DELETE'])
+def delete_package(word_package_id):
+    status = PackageController.delete_package(word_package_id=word_package_id)
+    return status
