@@ -187,6 +187,10 @@ def delete_team_role(team_role_id):
     return "True"
 
 
+##########################
+# Projects
+##########################
+
 @api.route('/project/list')
 def list_projects():
     return ProjectController.list_projects()
@@ -238,6 +242,10 @@ def delete_project(project_id):
     return status
 
 
+##########################
+# Work-Package
+##########################
+
 @api.route('/package/list')
 def list_package():
     return PackageController.list_packages()
@@ -256,7 +264,7 @@ def add_package():
 
 
 @api.route('/package/<int:word_package_id>', methods=['PUT'])
-def update_project():
+def update_package():
     word_package_id = request.form.get('word_package_id')
     if word_package_id is not None:
         word_package_id = int(word_package_id)
