@@ -1,4 +1,4 @@
-from flask import jsonify
+from flask import jsonify, request, escape
 from sqlalchemy.ext.declarative import DeclarativeMeta
 from pmm_backend import api, settings, db
 from pmm_backend.models import models
@@ -8,24 +8,37 @@ import time
 import json
 from pmm_backend.controllers.session import SessionController
 
-
 class UserController():
 
     @staticmethod
     @SessionController.admin_required
-    def add_user(role_id, email, password, first_name, last_name):
-        bcrypt = Bcrypt(api)
-        hash = bcrypt.generate_password_hash(password)
+    def add_user(**kwargs):
+        user = models.User(email=escape(request.form.get('email')))
 
-        user = models.User(role_id=role_id, email=email, first_name=first_name,
-                           last_name=last_name, password_hash=hash)
+        role_id = request.form.get('role_id')
+        if role_id is not None:
+            user.role_id = int(role_id)
+
+        password = request.form.get('password')
+        if password is not None:
+            bcrypt = Bcrypt(api)
+            user.password_hash = bcrypt.generate_password_hash(password)
+
+        first_name = request.form.get('first_name')
+        if first_name is not None:
+            user.first_name = escape(first_name)
+
+        last_name = request.form.get('first_name')
+        if last_name is not None:
+            user.last_name = request.form.get('last_name')
 
         db.session.add(user)
         db.session.commit()
+        return jsonify({'message': 'success'}), 200
 
     @staticmethod
     @SessionController.admin_required
-    def update_user(user_id, role_id, email, password, first_name, last_name):
+    def update_user(user_id, role_id, email, password, first_name, last_name, **kwargs):
         found_user = models.User.query.filter_by(user_id=user_id).first()
 
         if role_id is not None:
@@ -49,7 +62,7 @@ class UserController():
 
     @staticmethod
     @SessionController.admin_required
-    def verify_login_valid(email, password):
+    def verify_login_valid(email, password, **kwargs):
         if models.User.query.filter_by(email=email).count() == 0:
             return False
         found_user = models.User.query.filter_by(email=email).first()
@@ -61,7 +74,7 @@ class UserController():
 
     @staticmethod
     @SessionController.admin_required
-    def try_login(session, email, password):
+    def try_login(session, email, password, **kwargs):
         login_valid = UserController.verify_login_valid(email, password)
 
         if login_valid:

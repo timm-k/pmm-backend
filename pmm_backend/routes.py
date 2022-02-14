@@ -29,26 +29,7 @@ def login_user():
 
 @api.route('/user', methods=['POST'])
 def add_user():
-
-    role_id = request.form.get('role_id')
-    if role_id is not None:
-        role_id = int(role_id)
-    email = request.form.get('email')
-    if email is not None:
-        email = escape(email)
-    password = request.form.get('password')
-    if password is not None:
-        password = escape(password)
-    first_name = request.form.get('first_name')
-    if first_name is not None:
-        first_name = escape(first_name)
-    last_name = request.form.get('last_name')
-    if last_name is not None:
-        last_name = escape(last_name)
-
-    UserController.add_user(role_id=role_id, email=email, password=password, first_name=first_name,
-                                last_name=last_name)
-    return "True"
+    return UserController.add_user()
 
 @api.route('/user/<int:user_id>', methods=['PUT'])
 def update_user(user_id):
