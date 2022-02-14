@@ -50,7 +50,7 @@ class SessionController():
                 token = request.headers['x-access-token']
             # return 401 if token is not passed
             if not token:
-                return "unauthorized", 401
+                return jsonify({'message': 'unauthorized'}), 401
 
             try:
                 # decoding the payload to fetch the stored details
@@ -60,10 +60,10 @@ class SessionController():
                 expire_timestamp = data['expire_timestamp']
                 current_timestamp = int(time.time())
                 if current_timestamp > expire_timestamp:
-                    return "invalid token", 401
+                    return jsonify({'message': 'invalid token'}), 401
 
             except:
-                return "invalid token", 401
+                return jsonify({'message': 'invalid token'}), 401
             # returns the current logged in users contex to the routes
             return f(current_user=current_user, *args, **kwargs)
         return decorated
@@ -77,7 +77,7 @@ class SessionController():
                 token = request.headers['x-access-token']
             # return 401 if token is not passed
             if not token:
-                return "unauthorized", 401
+                return jsonify({'message': 'unauthorized'}), 401
 
             try:
                 # decoding the payload to fetch the stored details
@@ -87,7 +87,7 @@ class SessionController():
                 expire_timestamp = data['expire_timestamp']
                 current_timestamp = int(time.time())
                 if current_timestamp > expire_timestamp:
-                    return "invalid token", 401
+                    return jsonify({'message': 'invalid token'}), 401
 
             except Exception as e:
                 print(e)

@@ -14,7 +14,11 @@ class UserController():
     @staticmethod
     @SessionController.admin_required
     def add_user(**kwargs):
-        user = models.User(email=escape(request.form.get('email')))
+        email = request.form.get('email')
+        if email is None:
+            return jsonify({'message': 'missing data: email'}), 400
+        email = str(escape(email))
+        user = models.User(email=email)
 
         role_id = request.form.get('role_id')
         if role_id is not None:
@@ -29,7 +33,7 @@ class UserController():
         if first_name is not None:
             user.first_name = str(escape(first_name))
 
-        last_name = request.form.get('first_name')
+        last_name = request.form.get('last_name')
         if last_name is not None:
             user.last_name = str(escape(request.form.get('last_name')))
 
@@ -41,6 +45,9 @@ class UserController():
     @SessionController.admin_required
     def update_user(user_id, **kwargs):
         user = models.User.query.filter_by(user_id=user_id).first()
+
+        if user is None:
+            return jsonify({'message': 'user not found'}), 404
 
         role_id = request.form.get('role_id')
         if role_id is not None:
@@ -59,7 +66,7 @@ class UserController():
         if first_name is not None:
             user.first_name = escape(first_name)
 
-        last_name = request.form.get('first_name')
+        last_name = request.form.get('last_name')
         if last_name is not None:
             user.last_name = request.form.get('last_name')
 
@@ -84,6 +91,10 @@ class UserController():
     @SessionController.admin_required
     def delete_user(user_id, **kwargs):
         found_user = models.User.query.filter_by(user_id=user_id).first()
+
+        if found_user is None:
+            return jsonify({'message': 'user not found'}), 404
+
         db.session.delete(found_user)
         db.session.commit()
         return jsonify({'message': 'success'}), 200

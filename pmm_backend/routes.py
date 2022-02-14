@@ -7,8 +7,13 @@ from pmm_backend.controllers.team_role import TeamRolesController
 from pmm_backend.controllers.workpackage import PackageController
 from pmm_backend.controllers.session import SessionController
 from pmm_backend.controllers.project import ProjectController
-from flask import redirect, request, session, escape
+from flask import redirect, request, session, escape, jsonify
 import time
+
+
+@api.errorhandler(404)
+def page_not_found(e):
+    return jsonify({'message': 'invalid url'}), 400
 
 
 ##########################
@@ -34,9 +39,11 @@ def add_user():
 def update_user(user_id):
     return UserController.update_user(user_id)
 
+
 @api.route('/user/<int:user_id>', methods=['DELETE'])
 def delete_user(user_id):
     return UserController.delete_user(user_id)
+
 
 ##########################
 # Employees
