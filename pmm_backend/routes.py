@@ -16,6 +16,11 @@ def page_not_found(e):
     return jsonify({'message': 'invalid url'}), 400
 
 
+@api.errorhandler(405)
+def method_not_allowed(e):
+    return jsonify({'message': 'request method not allowed'}), 405
+
+
 ##########################
 # Users
 ##########################
@@ -94,36 +99,17 @@ def list_teams():
 
 @api.route('/team', methods=['POST'])
 def add_team():
-    name = request.form.get('name')
-    if name is not None:
-        name = escape(name)
-
-    description = request.form.get('description')
-    if description is not None:
-        description = escape(description)
-
-    TeamsController.add_team(name=name, description=description)
-    return "True"
+    return TeamsController.add_team()
 
 
 @api.route('/team/<int:team_id>', methods=['PUT'])
 def update_team(team_id):
-    name = request.form.get('name')
-    if name is not None:
-        name = escape(name)
-
-    description = request.form.get('description')
-    if description is not None:
-        description = escape(description)
-
-    TeamsController.update_team(team_id=team_id, name=name, description=description)
-    return "True"
+    return TeamsController.update_team(team_id)
 
 
 @api.route('/team/<int:team_id>', methods=['DELETE'])
 def delete_team(team_id):
-    TeamsController.delete_team(team_id=team_id)
-    return "True"
+    return TeamsController.delete_team(team_id=team_id)
 
 
 ##########################
