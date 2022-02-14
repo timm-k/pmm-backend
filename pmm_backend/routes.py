@@ -5,6 +5,7 @@ from pmm_backend.controllers.teams import TeamsController
 from pmm_backend.controllers.employee import EmployeeController
 from pmm_backend.controllers.team_role import TeamRolesController
 from pmm_backend.controllers.workpackage import PackageController
+from pmm_backend.controllers.session import SessionController
 from pmm_backend.controllers.project import ProjectController
 from flask import redirect, request, session, escape
 import time
@@ -23,14 +24,11 @@ def list_users():
 def login_user():
     email = request.form.get('email')
     password = request.form.get('password')
-    status = UserController.try_login(session, email, password)
-    return str(status)
+    return SessionController.login()
 
 
-@api.route('/user', methods=['POST', 'PUT'])
+@api.route('/user', methods=['POST'])
 def add_user():
-    if not UserController.is_admin(session):
-        return "no_permission"
 
     role_id = request.form.get('role_id')
     if role_id is not None:
@@ -48,16 +46,32 @@ def add_user():
     if last_name is not None:
         last_name = escape(last_name)
 
-    if request.method == 'POST':
-        UserController.add_user(role_id=role_id, email=email, password=password, first_name=first_name,
+    UserController.add_user(role_id=role_id, email=email, password=password, first_name=first_name,
                                 last_name=last_name)
-        return "True"
+    return "True"
 
-    if request.method == 'PUT':
-        user_id = int(request.form.get('user_id'))
-        UserController.update_user(user_id=user_id, role_id=role_id, first_name=first_name, last_name=last_name,
-                                   password=password, email=email)
-        return "True"
+@api.route('/user/<int:user_id>', methods=['PUT'])
+def update_user(user_id):
+
+    role_id = request.form.get('role_id')
+    if role_id is not None:
+        role_id = int(role_id)
+    email = request.form.get('email')
+    if email is not None:
+        email = escape(email)
+    password = request.form.get('password')
+    if password is not None:
+        password = escape(password)
+    first_name = request.form.get('first_name')
+    if first_name is not None:
+        first_name = escape(first_name)
+    last_name = request.form.get('last_name')
+    if last_name is not None:
+        last_name = escape(last_name)
+
+    UserController.update_user(user_id=user_id, role_id=role_id, first_name=first_name, last_name=last_name,
+                               password=password, email=email)
+    return "True"
 
 
 ##########################

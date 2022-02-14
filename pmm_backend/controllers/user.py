@@ -1,3 +1,4 @@
+from flask import jsonify
 from sqlalchemy.ext.declarative import DeclarativeMeta
 from pmm_backend import api, settings, db
 from pmm_backend.models import models
@@ -5,10 +6,13 @@ from flask_restx import Resource, fields, marshal
 from flask_bcrypt import Bcrypt
 import time
 import json
+from pmm_backend.controllers.session import SessionController
 
 
 class UserController():
+
     @staticmethod
+    @SessionController.admin_required
     def add_user(role_id, email, password, first_name, last_name):
         bcrypt = Bcrypt(api)
         hash = bcrypt.generate_password_hash(password)
@@ -20,6 +24,7 @@ class UserController():
         db.session.commit()
 
     @staticmethod
+    @SessionController.admin_required
     def update_user(user_id, role_id, email, password, first_name, last_name):
         found_user = models.User.query.filter_by(user_id=user_id).first()
 
@@ -43,6 +48,7 @@ class UserController():
         db.session.commit()
 
     @staticmethod
+    @SessionController.admin_required
     def verify_login_valid(email, password):
         if models.User.query.filter_by(email=email).count() == 0:
             return False
@@ -54,6 +60,7 @@ class UserController():
         return pass_valid
 
     @staticmethod
+    @SessionController.admin_required
     def try_login(session, email, password):
         login_valid = UserController.verify_login_valid(email, password)
 
@@ -68,37 +75,8 @@ class UserController():
             return False
 
     @staticmethod
-    def is_logged_in(session):
-        return True # REMOVE BEFORE RELEASE !
-
-        if 'user_id' not in session:
-            return False
-
-        expire_timestamp = session['session_expire_timestamp']
-        current_timestamp = int(time.time())
-
-        if current_timestamp > expire_timestamp:
-            return False
-
-        return True
-
-    @staticmethod
-    def is_admin(session):
-        return True # REMOVE BEFORE RELEASE !
-
-        if not UserController.is_logged_in(session):
-            return False
-
-        user_id = session['user_id']
-        found_user = models.User.query.filter_by(user_id=user_id).first()
-        role_id = found_user.role_id
-
-        if role_id == 1:
-            return True
-        return False
-
-    @staticmethod
-    def list_users():
+    @SessionController.admin_required
+    def list_users(**kwargs):
         marshaller = {
             'user_id': fields.Integer,
             'role_id': fields.Integer,
