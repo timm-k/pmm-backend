@@ -22,8 +22,6 @@ def list_users():
 
 @api.route('/user/login', methods=['POST'])
 def login_user():
-    email = request.form.get('email')
-    password = request.form.get('password')
     return SessionController.login()
 
 
@@ -31,29 +29,14 @@ def login_user():
 def add_user():
     return UserController.add_user()
 
+
 @api.route('/user/<int:user_id>', methods=['PUT'])
 def update_user(user_id):
+    return UserController.update_user(user_id)
 
-    role_id = request.form.get('role_id')
-    if role_id is not None:
-        role_id = int(role_id)
-    email = request.form.get('email')
-    if email is not None:
-        email = escape(email)
-    password = request.form.get('password')
-    if password is not None:
-        password = escape(password)
-    first_name = request.form.get('first_name')
-    if first_name is not None:
-        first_name = escape(first_name)
-    last_name = request.form.get('last_name')
-    if last_name is not None:
-        last_name = escape(last_name)
-
-    UserController.update_user(user_id=user_id, role_id=role_id, first_name=first_name, last_name=last_name,
-                               password=password, email=email)
-    return "True"
-
+@api.route('/user/<int:user_id>', methods=['DELETE'])
+def delete_user(user_id):
+    return UserController.delete_user(user_id)
 
 ##########################
 # Employees
@@ -75,7 +58,6 @@ def add_employee():
 
 @api.route('/employee/<int:employee_id>', methods=['PUT'])
 def update_employee(employee_id):
-
     first_name = request.form.get('first_name')
     if first_name is not None:
         first_name = escape(first_name)
@@ -251,7 +233,6 @@ def add_package():
 
 @api.route('/package/<int:word_package_id>', methods=['PUT'])
 def update_package(word_package_id):
-
     project_id = request.form.get('project_id')
     if project_id is not None:
         project_id = int(project_id)
@@ -272,7 +253,7 @@ def update_package(word_package_id):
     if end_timestamp is not None:
         end_timestamp = escape(end_timestamp)
 
-    PackageController.update_package(word_package_id, project_id, name, description, start_timestamp,end_timestamp)
+    PackageController.update_package(word_package_id, project_id, name, description, start_timestamp, end_timestamp)
     return "True"
 
 
@@ -280,4 +261,3 @@ def update_package(word_package_id):
 def delete_package(word_package_id):
     PackageController.delete_package(word_package_id)
     return "True"
-
