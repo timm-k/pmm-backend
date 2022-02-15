@@ -3,6 +3,8 @@ attrs==21.4.0
 bcrypt==3.2.0
 cffi==1.15.0
 click==8.0.3
+cryptography==36.0.1
+Deprecated==1.2.13
 Flask==2.0.2
 Flask-Bcrypt==0.7.1
 Flask-Cors==3.0.10
@@ -14,9 +16,11 @@ inflect==5.4.0
 itsdangerous==2.0.1
 Jinja2==3.0.3
 jsonschema==4.4.0
+jwcrypto==1.0
 MarkupSafe==2.0.1
 mysqlclient==2.1.0
 pycparser==2.21
+PyJWT==2.3.0
 pyrsistent==0.18.1
 pytz==2021.3
 six==1.16.0
@@ -24,3 +28,4 @@ sqlacodegen==2.3.0
 SQLAlchemy==1.4.31
 waitress==2.0.0
 Werkzeug==2.0.2
+wrapt==1.13.3
