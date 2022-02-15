@@ -20,7 +20,6 @@ def page_not_found(e):
 def method_not_allowed(e):
     return jsonify({'message': 'request method not allowed'}), 405
 
-
 ##########################
 # Users
 ##########################
@@ -123,36 +122,17 @@ def list_team_roles():
 
 @api.route('/team/role', methods=['POST'])
 def add_team_role():
-    name = request.form.get('name')
-    if name is not None:
-        name = escape(name)
-
-    description = request.form.get('description')
-    if description is not None:
-        description = escape(description)
-
-    TeamRolesController.add_team_role(name=name, description=description)
-    return "True"
+    return TeamRolesController.add_team_role()
 
 
 @api.route('/team/role/<int:team_role_id>', methods=['PUT'])
 def update_team_role(team_role_id):
-    name = request.form.get('name')
-    if name is not None:
-        name = escape(name)
-
-    description = request.form.get('description')
-    if description is not None:
-        description = escape(description)
-
-    TeamRolesController.update_team_role(team_role_id=team_role_id, name=name, description=description)
-    return "True"
+    return TeamRolesController.update_team_role(team_role_id)
 
 
 @api.route('/team/role/<int:team_role_id>', methods=['DELETE'])
 def delete_team_role(team_role_id):
-    TeamRolesController.delete_team_role(team_role_id=team_role_id)
-    return "True"
+    return TeamRolesController.delete_team_role(team_role_id)
 
 
 ##########################

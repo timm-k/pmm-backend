@@ -39,9 +39,9 @@ class TeamsController:
         description = request.form.get('description')
 
         if name is not None:
-            found_team.name = name
+            found_team.name = escape(name)
         if description is not None:
-            found_team.description = description
+            found_team.description = escape(description)
 
         db.session.commit()
         return jsonify({'message': 'success'}), 200
