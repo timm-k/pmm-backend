@@ -1,14 +1,18 @@
 from pmm_backend import api, settings, db
 from pmm_backend.models import models
 from flask_restx import fields, marshal
+from flask import jsonify, request, escape
+from pmm_backend.controllers.session import SessionController
 
+import time
 import json
 
 
 class PackageController:
 
     @staticmethod
-    def list_packages():
+    @SessionController.login_required
+    def list_packages(**kwargs):
         marshaller = {
             'project_id': fields.Integer,
             'name': fields.String,
@@ -21,31 +25,72 @@ class PackageController:
         return json.dumps(marshal(all_packages, marshaller))
 
     @staticmethod
-    def add_package(project_id, name, description, start_timestamp, end_timestamp):
+    @SessionController.login_required
+    def add_package(**kwargs):
+
+        project_id = escape(request.form.get('project_id'))
+        name = escape(request.form.get('name'))
+        description = escape(request.form.get('description'))
+        start_timestamp = int(time.time())
+        end_timestamp = int(time.time())
+
+        if project_id is None:
+            return jsonify({'message': 'missing data: project_id'}), 400
+        if name is None:
+            return jsonify({'message': 'missing data: name'}), 400
+        if description is None:
+            return jsonify({'message': 'missing data: description'}), 400
+        if start_timestamp is None:
+            return jsonify({'message': 'missing data: start_timestamp'}), 400
+        if end_timestamp is None:
+            return jsonify({'message': 'missing data: end_timestamp'}), 400
+
         package = models.WorkPackage(project_id=project_id, name=name, description=description,
                                      start_timestamp=start_timestamp, end_timestamp=end_timestamp)
 
         db.session.add(package)
         db.session.commit()
+        return jsonify({'message': 'success'}), 200
 
     @staticmethod
-    def update_package(word_package_id, project_id, name, description, start_timestamp, end_timestamp):
+    @SessionController.login_required
+    def update_package(word_package_id, **kwargs):
         package = models.WorkPackage.query.filter_by(word_package_id=word_package_id).first()
 
+        if package is None:
+            return jsonify({'message': 'package not found'}), 404
+
+        project_id = request.form.get('project_id')
         if project_id is not None:
-            package.project_id = project_id
+            package.project_id = int(project_id)
+
+        name = request.form.get('name')
         if name is not None:
-            package.name = name
+            package.name = escape(name)
+
+        description = request.form.get('description')
         if description is not None:
-            package.description = description
+            package.description = escape(description)
+
+        start_timestamp = request.form.get('start_timestamp')
         if start_timestamp is not None:
-            package.start_timestamp = start_timestamp
+            package.start_timestamp = escape(start_timestamp)
+
+        end_timestamp = request.form.get('end_timestamp')
         if end_timestamp is not None:
-            package.end_timestamp = end_timestamp
+            package.end_timestamp = escape(end_timestamp)
 
         db.session.commit()
+        return jsonify({'message': 'success'}), 200
 
     @staticmethod
-    def delete_package(word_package_id):
-        models.WorkPackage.query.filter_by(word_package_id=word_package_id).delete()
+    @SessionController.login_required
+    def delete_package(word_package_id, **kwargs):
+        package = models.WorkPackage.query.filter_by(word_package_id=word_package_id).first()
+
+        if package is None:
+            return jsonify({'message': 'package not found'}), 404
+
+        db.session.delete(package)
         db.session.commit()
+        return jsonify({'message': 'success'}), 200

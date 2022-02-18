@@ -1,15 +1,18 @@
 from pmm_backend import api, settings, db
 from pmm_backend.models import models
 from flask_restx import fields, marshal
+from flask import jsonify, request, escape
+from pmm_backend.controllers.session import SessionController
 
-
+import time
 import json
 
 
 class ProjectController:
 
     @staticmethod
-    def list_projects():
+    @SessionController.login_required
+    def list_projects(**kwargs):
         marshaller = {
             'project_id': fields.Integer,
             'name': fields.String,
@@ -22,31 +25,66 @@ class ProjectController:
         return json.dumps(marshal(all_projects, marshaller))
 
     @staticmethod
-    def add_project(name, description, start_timestamp, end_timestamp):
+    @SessionController.login_required
+    def add_project(**kwargs):
+        name = escape(request.form.get('name'))
+        description = escape(request.form.get('description'))
+        start_timestamp = int(time.time())
+        end_timestamp = int(time.time())
+
+        if name is None:
+            return jsonify({'message': 'missing data: name'}), 400
+        if description is None:
+            return jsonify({'message': 'missing data: description'}), 400
+        if start_timestamp is None:
+            return jsonify({'message': 'missing data: start_timestamp'}), 400
+        if end_timestamp is None:
+            return jsonify({'message': 'missing data: end_timestamp'}), 400
+
         project = models.Project(name=name, description=description,
                                  start_timestamp=start_timestamp, end_timestamp=end_timestamp)
 
         db.session.add(project)
         db.session.commit()
+        return jsonify('message:' 'success'), 200
 
     @staticmethod
-    def update_project(project_id, name, description, start_timestamp, end_timestamp):
+    @SessionController.login_required
+    def update_project(project_id, **kwargs):
         project = models.Project.query.filter_by(project_id=project_id).first()
 
+        if project is None:
+            return jsonify({'message': 'project not found'}), 404
+
+        name = request.form.get('name')
         if name is not None:
-            project.name = name
+            project.name = escape(name)
+
+        description = request.form.get('description')
         if description is not None:
-            project.description = description
+            project.description = escape(description)
+
+        start_timestamp = request.form.get('start_timestamp')
         if start_timestamp is not None:
-            project.start_timestamp = start_timestamp
+            project.start_timestamp = escape(start_timestamp)
+
+        end_timestamp = request.form.get('end_timestamp')
         if end_timestamp is not None:
-            project.end_timestamp = end_timestamp
+            project.end_timestamp = escape(end_timestamp)
 
         db.session.commit()
+        return jsonify('message:' 'success'), 200
 
     @staticmethod
-    def delete_project(project_id):
-        models.Project.query.filter_by(project_id=project_id).delete()
+    @SessionController.login_required
+    def delete_project(project_id, **kwargs):
+        project = models.Project.query.filter_by(project_id=project_id).first()
+
+        if project is None:
+            return jsonify({'message': 'project not found'}), 404
+
+        db.session.delete(project)
         db.session.commit()
+        return jsonify('message:' 'success'), 200
 
 

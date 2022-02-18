@@ -1,6 +1,8 @@
 from pmm_backend import api, settings, db
 from pmm_backend.models import models
 from flask_restx import fields, marshal
+from flask import jsonify, request, escape
+from pmm_backend.controllers.session import SessionController
 
 import json
 
@@ -8,14 +10,8 @@ import json
 class EmployeeController:
 
     @staticmethod
-    def add_employee(first_name, last_name):
-        employee = models.Employee(first_name=first_name, last_name=last_name)
-
-        db.session.add(employee)
-        db.session.commit()
-
-    @staticmethod
-    def list_employees():
+    @SessionController.login_required
+    def list_employees(**kwargs):
         marshaller = {
             'employee_id': fields.Integer,
             'first_name': fields.String,
@@ -26,16 +22,49 @@ class EmployeeController:
         return json.dumps(marshal(all_employees, marshaller))
 
     @staticmethod
-    def update_employee(employee_id, first_name, last_name):
-        employee = models.Employee.query.filter_by(employee_id=employee_id).first()
-        if first_name is not None:
-            employee.first_name = first_name
-        if last_name is not None:
-            employee.last_name = last_name
+    @SessionController.login_required
+    def add_employee(**kwargs):
+        first_name = escape(request.form.get('first_name'))
+        last_name = escape(request.form.get('last_name'))
 
+        if first_name is None:
+            return jsonify({'message': 'missing data: first_name'}), 400
+        if last_name is None:
+            return jsonify({'message': 'missing data: last_name'}), 400
+
+        employee = models.Employee(first_name=first_name, last_name=last_name)
+
+        db.session.add(employee)
         db.session.commit()
+        return jsonify({'message': 'success'}), 200
 
     @staticmethod
-    def delete_employee(employee_id):
-        models.Employee.query.filter_by(employee_id=employee_id).delete()
+    @SessionController.login_required
+    def update_employee(employee_id, **kwargs):
+        employee = models.Employee.query.filter_by(employee_id=employee_id).first()
+
+        if employee is None:
+            return jsonify('message:' 'employee not found'), 404
+
+        first_name = request.form.get('first_name')
+        if first_name is not None:
+            employee.first_name = escape(first_name)
+
+        last_name = request.form.get('last_name')
+        if last_name is not None:
+            employee.last_name = escape(last_name)
+
         db.session.commit()
+        return jsonify({'message': 'success'}), 200
+
+    @staticmethod
+    @SessionController.login_required
+    def delete_employee(employee_id, **kwargs):
+        employee = models.Employee.query.filter_by(employee_id=employee_id).first()
+
+        if employee is None:
+            return jsonify('message:' 'employee not found'), 404
+
+        db.session.delete(employee)
+        db.session.commit()
+        return jsonify({'message': 'success'}), 200
