@@ -14,6 +14,7 @@ class PackageController:
     @SessionController.login_required
     def list_packages(**kwargs):
         marshaller = {
+            'word_package_id': fields.Integer,
             'project_id': fields.Integer,
             'name': fields.String,
             'description': fields.String,
@@ -34,8 +35,12 @@ class PackageController:
         start_timestamp = int(time.time())
         end_timestamp = int(time.time())
 
+        control_project_id = db.session.query(models.Project).filter(models.Project.project_id == project_id)
+
         if project_id is None:
             return jsonify({'message': 'missing data: project_id'}), 400
+        if not db.session.query(control_project_id.exists()).scalar():
+            return jsonify({'message': 'project_id doesnt exists'}), 400
         if name is None:
             return jsonify({'message': 'missing data: name'}), 400
         if description is None:
