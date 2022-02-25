@@ -39,7 +39,7 @@ class UserController():
 
         db.session.add(user)
         db.session.commit()
-        return jsonify({'message': 'success'}), 200
+        return jsonify({'message': 'success', 'user_id': user.user_id}), 200
 
     @staticmethod
     @SessionController.admin_required
