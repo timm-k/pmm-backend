@@ -27,3 +27,8 @@ TestUser.test_remove_user(client, admin_token, user_id)
 TestUser.test_add_user_missing_email(client, admin_token)
 TestUser.test_remove_invalid_user(client, admin_token)
 TestUser.test_update_invalid_user(client, admin_token)
+
+TestUser.test_add_user_invalid_token(client)
+TestUser.test_add_user_missing_token(client)
+TestUser.test_list_user_invalid_token(client)
+TestUser.test_list_user_missing_token(client)

@@ -77,3 +77,35 @@ class TestUser:
         response = client.put("/user/999999", data=data, headers={"x-access-token": token})
         assert response.status_code == 404
         assert "user not found" in response.json["message"]
+
+    @staticmethod
+    def test_add_user_invalid_token(client):
+        data = {"email": "test_user@test.com",
+                "password": "test",
+                "first_name": "test_first_name",
+                "last_name": "test_last_name",
+                "role_id": 1}
+
+        response = client.post("/user", data=data, headers={"x-access-token": "SDsdjkl"})
+        assert response.status_code == 401
+
+    @staticmethod
+    def test_add_user_missing_token(client):
+        data = {"email": "test_user@test.com",
+                "password": "test",
+                "first_name": "test_first_name",
+                "last_name": "test_last_name",
+                "role_id": 1}
+
+        response = client.post("/user", data=data)
+        assert response.status_code == 401
+
+    @staticmethod
+    def test_list_user_invalid_token(client):
+        response = client.get("/user/list", headers={"x-access-token": "fjskljdl"})
+        assert response.status_code == 401
+
+    @staticmethod
+    def test_list_user_missing_token(client):
+        response = client.get("/user/list")
+        assert response.status_code == 401
