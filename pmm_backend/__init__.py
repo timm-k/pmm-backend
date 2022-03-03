@@ -9,5 +9,5 @@ CORS(api)
 
 db = SQLAlchemy(api)
 
-from pmm_backend import routes
+from pmm_backend.controllers.routes import RoutesController
 
