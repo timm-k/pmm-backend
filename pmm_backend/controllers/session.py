@@ -37,7 +37,7 @@ class SessionController():
             return jsonify({
                 'message': 'success',
                 'token': token
-            }), 201
+            }), 200
 
         return jsonify({'message': 'invalid password'}), 401
 
