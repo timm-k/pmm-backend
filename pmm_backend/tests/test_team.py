@@ -17,8 +17,8 @@ class TestTeam:
         user_list = json.loads(response.data)
         for u in user_list:
             if int(team_id) == int(u['team_id']):
-                assert u['first_name'] == "test_first_name"
-                assert u['role_id'] == 1
+                assert u['name'] == "test_team"
+                assert u['description'] == "test_team_description"
 
         return team_id
     
@@ -39,69 +39,43 @@ class TestTeam:
         team_list = json.loads(response.data)
         for t in team_list:
             if int(team_id) == int(t['team_id']):
-                assert t['first_name'] == "test_edited_first_name"
-                assert t['role_id'] == 2
+                assert t['name'] == "test_team_edit"
+                assert t['description'] == "test_team_description_edit"
 
 
     @staticmethod
-    def test_remove_user(client, token, team_id):
-        response = client.delete("/user/" + str(team_id), headers={"x-access-token": token})
+    def test_remove_team(client, token, team_id):
+        response = client.delete("/team/" + str(team_id), headers={"x-access-token": token})
         assert response.status_code == 200
         assert response.json["message"] == "success"
 
     @staticmethod
-    def test_add_user_missing_email(client, token):
-        data = {"password": "test",
-                "first_name": "test_first_name",
-                "last_name": "test_last_name",
-                "role_id": 1}
+    def test_add_team_missing_name(client, token):
+        data = {"description": "test"}
 
-        response = client.post("/user", data=data, headers={"x-access-token": token})
+        response = client.post("/team", data=data, headers={"x-access-token": token})
         assert response.status_code == 400
         assert "missing data" in response.json["message"]
 
     @staticmethod
-    def test_remove_invalid_user(client, token):
-        response = client.delete("/user/9999999", headers={"x-access-token": token})
+    def test_add_team_missing_description(client, token):
+        data = {"name": "test"}
+
+        response = client.post("/team", data=data, headers={"x-access-token": token})
+        assert response.status_code == 400
+        assert "missing data" in response.json["message"]
+
+    @staticmethod
+    def test_remove_invalid_team(client, token):
+        response = client.delete("/team/9999999", headers={"x-access-token": token})
         assert response.status_code == 404
-        assert "user not found" in response.json["message"]
+        assert "team not found" in response.json["message"]
 
     @staticmethod
-    def test_update_invalid_user(client, token):
-        data = {"email": "test23432@test.com"}
+    def test_update_invalid_team(client, token):
+        data = {"name": "test234"}
 
-        response = client.put("/user/999999", data=data, headers={"x-access-token": token})
+        response = client.put("/team/999999", data=data, headers={"x-access-token": token})
         assert response.status_code == 404
-        assert "user not found" in response.json["message"]
+        assert "team not found" in response.json["message"]
 
-    @staticmethod
-    def test_add_user_invalid_token(client):
-        data = {"email": "test_user@test.com",
-                "password": "test",
-                "first_name": "test_first_name",
-                "last_name": "test_last_name",
-                "role_id": 1}
-
-        response = client.post("/user", data=data, headers={"x-access-token": "SDsdjkl"})
-        assert response.status_code == 401
-
-    @staticmethod
-    def test_add_user_missing_token(client):
-        data = {"email": "test_user@test.com",
-                "password": "test",
-                "first_name": "test_first_name",
-                "last_name": "test_last_name",
-                "role_id": 1}
-
-        response = client.post("/user", data=data)
-        assert response.status_code == 401
-
-    @staticmethod
-    def test_list_user_invalid_token(client):
-        response = client.get("/user/list", headers={"x-access-token": "fjskljdl"})
-        assert response.status_code == 401
-
-    @staticmethod
-    def test_list_user_missing_token(client):
-        response = client.get("/user/list")
-        assert response.status_code == 401
