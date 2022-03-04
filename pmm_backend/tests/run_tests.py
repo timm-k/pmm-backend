@@ -1,6 +1,7 @@
 from pmm_backend import api
 from pmm_backend.tests.test_user import TestUser
 from pmm_backend.tests.test_login import TestLogin
+from pmm_backend.tests.test_team import TestTeam
 
 client = api.test_client()
 
@@ -32,3 +33,10 @@ TestUser.test_add_user_invalid_token(client)
 TestUser.test_add_user_missing_token(client)
 TestUser.test_list_user_invalid_token(client)
 TestUser.test_list_user_missing_token(client)
+
+
+#######
+# Teams
+#######
+
+team_id = TestTeam.test_add_and_list_team(client, admin_token)
