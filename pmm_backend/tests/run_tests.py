@@ -4,6 +4,7 @@ from pmm_backend.tests.test_login import TestLogin
 from pmm_backend.tests.test_team import TestTeam
 from pmm_backend.tests.test_team_role import TestTeamRole
 from pmm_backend.tests.test_employee import TestEmployee
+from pmm_backend.tests.test_project import TestProject
 
 client = api.test_client()
 
@@ -67,7 +68,7 @@ TestTeamRole.test_update_invalid_team_role(client, admin_token)
 # Employees
 #######
 
-employee_id = TestEmployee.test_add_and_list_employsee(client, admin_token)
+employee_id = TestEmployee.test_add_and_list_employee(client, admin_token)
 TestEmployee.test_edit_and_list_employee(client, admin_token, employee_id)
 TestEmployee.test_remove_employee(client, admin_token, employee_id)
 
@@ -80,10 +81,12 @@ TestEmployee.test_update_invalid_employee(client, admin_token)
 # Projects
 #######
 
-# project_id = Testproject.test_add_and_list_employsee(client, admin_token)
-# Testproject.test_edit_and_list_project(client, admin_token, project_id)
-# Testproject.test_remove_project(client, admin_token, project_id)
+project_id = TestProject.test_add_and_list_project(client, admin_token)
+TestProject.test_edit_and_list_project(client, admin_token, project_id)
+TestProject.test_remove_project(client, admin_token, project_id)
 #
-# Testproject.test_add_project_missing_first_name(client, admin_token)
-# Testproject.test_remove_invalid_project(client, admin_token)
-# Testproject.test_update_invalid_project(client, admin_token)
+TestProject.test_add_project_missing_name(client, admin_token)
+TestProject.test_add_project_missing_description(client, admin_token)
+TestProject.test_add_project_missing_timestamps(client, admin_token)
+TestProject.test_remove_invalid_project(client, admin_token)
+TestProject.test_update_invalid_project(client, admin_token)

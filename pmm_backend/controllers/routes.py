@@ -138,7 +138,7 @@ class RoutesController:
 
 
     @staticmethod
-    @api.route('/project/add', methods=['POST'])
+    @api.route('/project', methods=['POST'])
     def add_project():
         return ProjectController.add_project()
 

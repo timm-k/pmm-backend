@@ -3,7 +3,7 @@ import json
 
 class TestEmployee:
     @staticmethod
-    def test_add_and_list_employsee(client, token):
+    def test_add_and_list_employee(client, token):
         data = {"first_name": "test_employee_first",
                 "last_name": "test_employee_last"}
 

@@ -27,10 +27,10 @@ class ProjectController:
     @staticmethod
     @SessionController.login_required
     def add_project(**kwargs):
-        name = escape(request.form.get('name'))
-        description = escape(request.form.get('description'))
-        start_timestamp = int(time.time())
-        end_timestamp = int(time.time())
+        name = request.form.get('name')
+        description = request.form.get('description')
+        start_timestamp = request.form.get('start_timestamp')
+        end_timestamp = request.form.get('end_timestamp')
 
         if name is None:
             return jsonify({'message': 'missing data: name'}), 400
@@ -41,12 +41,17 @@ class ProjectController:
         if end_timestamp is None:
             return jsonify({'message': 'missing data: end_timestamp'}), 400
 
+        name = escape(name)
+        description = escape(description)
+        start_timestamp = int(start_timestamp)
+        end_timestamp = int(end_timestamp)
+
         project = models.Project(name=name, description=description,
                                  start_timestamp=start_timestamp, end_timestamp=end_timestamp)
 
         db.session.add(project)
         db.session.commit()
-        return jsonify('message:' 'success'), 200
+        return jsonify({'message': 'success', 'project_id': project.project_id}), 200
 
     @staticmethod
     @SessionController.login_required
