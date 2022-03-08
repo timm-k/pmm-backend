@@ -24,7 +24,7 @@ class TeamRolesController:
 
         db.session.add(team_role)
         db.session.commit()
-        return jsonify({'message': 'success'}), 200
+        return jsonify({'message': 'success', 'team_role_id': team_role.team_role_id}), 200
 
     @staticmethod
     @SessionController.login_required

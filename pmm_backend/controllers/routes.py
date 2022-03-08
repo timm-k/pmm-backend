@@ -61,7 +61,7 @@ class RoutesController:
         return EmployeeController.list_employees()
 
     @staticmethod
-    @api.route('/employee/add', methods=['POST'])
+    @api.route('/employee', methods=['POST'])
     def add_employee():
         return EmployeeController.add_employee()
 

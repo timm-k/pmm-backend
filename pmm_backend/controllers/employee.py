@@ -24,19 +24,19 @@ class EmployeeController:
     @staticmethod
     @SessionController.login_required
     def add_employee(**kwargs):
-        first_name = escape(request.form.get('first_name'))
-        last_name = escape(request.form.get('last_name'))
+        first_name = request.form.get('first_name')
+        last_name = request.form.get('last_name')
 
         if first_name is None:
             return jsonify({'message': 'missing data: first_name'}), 400
         if last_name is None:
             return jsonify({'message': 'missing data: last_name'}), 400
 
-        employee = models.Employee(first_name=first_name, last_name=last_name)
+        employee = models.Employee(first_name=escape(first_name), last_name=escape(last_name))
 
         db.session.add(employee)
         db.session.commit()
-        return jsonify({'message': 'success'}), 200
+        return jsonify({'message': 'success', 'employee_id': employee.employee_id}), 200
 
     @staticmethod
     @SessionController.login_required
