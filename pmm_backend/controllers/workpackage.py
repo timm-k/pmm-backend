@@ -14,7 +14,7 @@ class PackageController:
     @SessionController.login_required
     def list_packages(**kwargs):
         marshaller = {
-            'word_package_id': fields.Integer,
+            'work_package_id': fields.Integer,
             'project_id': fields.Integer,
             'name': fields.String,
             'description': fields.String,
@@ -29,17 +29,17 @@ class PackageController:
     @SessionController.login_required
     def add_package(**kwargs):
 
-        project_id = escape(request.form.get('project_id'))
-        name = escape(request.form.get('name'))
-        description = escape(request.form.get('description'))
-        start_timestamp = int(time.time())
-        end_timestamp = int(time.time())
+        project_id = request.form.get('project_id')
+        name = request.form.get('name')
+        description = request.form.get('description')
+        start_timestamp = request.form.get('start_timestamp')
+        end_timestamp = request.form.get('end_timestamp')
 
         control_project_id = db.session.query(models.Project).filter(models.Project.project_id == project_id)
 
         if project_id is None:
             return jsonify({'message': 'missing data: project_id'}), 400
-        if not db.session.query(control_project_id.exists()).scalar():
+        if control_project_id.count() == 0:
             return jsonify({'message': 'project_id doesnt exists'}), 400
         if name is None:
             return jsonify({'message': 'missing data: name'}), 400
@@ -50,17 +50,23 @@ class PackageController:
         if end_timestamp is None:
             return jsonify({'message': 'missing data: end_timestamp'}), 400
 
+        project_id = int(project_id)
+        name = escape(name)
+        description = escape(description)
+        start_timestamp = int(start_timestamp)
+        end_timestamp = int(end_timestamp)
+
         package = models.WorkPackage(project_id=project_id, name=name, description=description,
                                      start_timestamp=start_timestamp, end_timestamp=end_timestamp)
 
         db.session.add(package)
         db.session.commit()
-        return jsonify({'message': 'success'}), 200
+        return jsonify({'message': 'success', 'work_package_id': package.work_package_id}), 200
 
     @staticmethod
     @SessionController.login_required
-    def update_package(word_package_id, **kwargs):
-        package = models.WorkPackage.query.filter_by(word_package_id=word_package_id).first()
+    def update_package(work_package_id, **kwargs):
+        package = models.WorkPackage.query.filter_by(work_package_id=work_package_id).first()
 
         if package is None:
             return jsonify({'message': 'package not found'}), 404
@@ -90,8 +96,8 @@ class PackageController:
 
     @staticmethod
     @SessionController.login_required
-    def delete_package(word_package_id, **kwargs):
-        package = models.WorkPackage.query.filter_by(word_package_id=word_package_id).first()
+    def delete_package(work_package_id, **kwargs):
+        package = models.WorkPackage.query.filter_by(work_package_id=work_package_id).first()
 
         if package is None:
             return jsonify({'message': 'package not found'}), 404

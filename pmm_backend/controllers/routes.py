@@ -164,7 +164,7 @@ class RoutesController:
 
 
     @staticmethod
-    @api.route('/package/add', methods=['POST'])
+    @api.route('/package', methods=['POST'])
     def add_package():
         return PackageController.add_package()
 

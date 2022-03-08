@@ -32,3 +32,13 @@ class TestLogin:
         response = client.post("/user/login", data={"password": "SDfjkljsd"})
         assert response.status_code == 401
         assert "invalid login" in response.json["message"]
+
+    @staticmethod
+    def test_invalid_token(client):
+        response = client.get("/user/list",  headers={"x-access-token": "iaminvalid"})
+        assert response.status_code == 401
+        assert "invalid login" in response.json["message"]
+
+        response = client.post("/user/add",  headers={"x-access-token": "iaminvalid"})
+        assert response.status_code == 401
+        assert "invalid login" in response.json["message"]

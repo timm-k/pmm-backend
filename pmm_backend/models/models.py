@@ -83,7 +83,7 @@ class User(db.Model):
 class WorkPackage(db.Model):
     __tablename__ = 'work_packages'
 
-    word_package_id = Column(INTEGER(11), primary_key=True)
+    work_package_id = Column(INTEGER(11), primary_key=True)
     project_id = Column(ForeignKey('projects.project_id', ondelete='CASCADE'), index=True)
     name = Column(Text(collation='utf8mb4_unicode_ci'), nullable=False)
     description = Column(Text(collation='utf8mb4_unicode_ci'))
@@ -96,5 +96,5 @@ class WorkPackage(db.Model):
 t_work_package_roles = Table(
     'work_package_roles', metadata,
     Column('team_role_id', ForeignKey('team_roles.team_role_id', ondelete='CASCADE', onupdate='CASCADE'), unique=True),
-    Column('work_package_id', ForeignKey('work_packages.word_package_id', ondelete='CASCADE', onupdate='CASCADE'), unique=True)
+    Column('work_package_id', ForeignKey('work_packages.work_package_id', ondelete='CASCADE', onupdate='CASCADE'), unique=True)
 )
