@@ -65,7 +65,7 @@ class SessionController():
             except:
                 return jsonify({'message': 'invalid token'}), 401
             # returns the current logged in users contex to the routes
-            return f(current_user=current_user, *args, **kwargs)
+            return f(current_user=current_user, *args)
 
         return decorated
 
@@ -94,6 +94,6 @@ class SessionController():
                 print(e)
                 return "invalid token", 401
             # returns the current logged in users contex to the routes
-            return f(current_user=current_user, *args, **kwargs)
+            return f(current_user=current_user, *args)
 
         return decorated

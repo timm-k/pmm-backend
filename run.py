@@ -1,5 +1,8 @@
-from pmm_backend import api, settings
+"""
+    Runs the backend
+"""
 from waitress import serve
+from pmm_backend import api, settings
 
 if __name__ == '__main__':
     if settings.DEBUG:

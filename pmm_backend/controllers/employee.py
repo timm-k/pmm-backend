@@ -1,3 +1,6 @@
+"""
+    Implements the EmployeeController
+"""
 import json
 from flask_restx import fields, marshal
 from flask import jsonify, request, escape
@@ -8,10 +11,17 @@ from pmm_backend.controllers.session import SessionController
 
 
 class EmployeeController:
+    """
+        Employee Controller Class
+    """
 
     @staticmethod
     @SessionController.login_required
-    def list_employees(**kwargs):
+    def list_employees():
+        """
+        Lists all employees.
+        :return: JSON List of employees
+        """
         marshaller = {
             'employee_id': fields.Integer,
             'first_name': fields.String,
@@ -23,7 +33,11 @@ class EmployeeController:
 
     @staticmethod
     @SessionController.login_required
-    def add_employee(**kwargs):
+    def add_employee():
+        """
+        Adds a new employee.
+        :return: Status in JSON format
+        """
         first_name = request.form.get('first_name')
         last_name = request.form.get('last_name')
 
@@ -40,7 +54,12 @@ class EmployeeController:
 
     @staticmethod
     @SessionController.login_required
-    def update_employee(employee_id, **kwargs):
+    def update_employee(employee_id):
+        """
+        Updates an employee.
+        :param employee_id: ID of the employee
+        :return: Status in JSON format
+        """
         employee = models.Employee.query.filter_by(employee_id=employee_id).first()
 
         if employee is None:
@@ -59,7 +78,12 @@ class EmployeeController:
 
     @staticmethod
     @SessionController.login_required
-    def delete_employee(employee_id, **kwargs):
+    def delete_employee(employee_id):
+        """
+        Deletes an employee.
+        :param employee_id: ID of the employee
+        :return: Status in JSON format
+        """
         employee = models.Employee.query.filter_by(employee_id=employee_id).first()
 
         if employee is None:
