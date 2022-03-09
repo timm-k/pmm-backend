@@ -1,11 +1,10 @@
-from flask import jsonify, request, escape
-from sqlalchemy.ext.declarative import DeclarativeMeta
-from pmm_backend import api, settings, db
-from pmm_backend.models import models
-from flask_restx import Resource, fields, marshal
-from flask_bcrypt import Bcrypt
-import time
 import json
+from flask import jsonify, request, escape
+from flask_restx import fields, marshal
+from flask_bcrypt import Bcrypt
+
+from pmm_backend import api, db
+from pmm_backend.models import models
 from pmm_backend.controllers.session import SessionController
 
 

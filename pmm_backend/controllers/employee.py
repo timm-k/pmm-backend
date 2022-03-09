@@ -1,10 +1,10 @@
-from pmm_backend import api, settings, db
-from pmm_backend.models import models
+import json
 from flask_restx import fields, marshal
 from flask import jsonify, request, escape
-from pmm_backend.controllers.session import SessionController
 
-import json
+from pmm_backend import db
+from pmm_backend.models import models
+from pmm_backend.controllers.session import SessionController
 
 
 class EmployeeController:

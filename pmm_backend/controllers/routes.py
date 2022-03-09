@@ -1,4 +1,5 @@
-import json
+from flask import jsonify
+
 from pmm_backend import api
 from pmm_backend.controllers.user import UserController
 from pmm_backend.controllers.teams import TeamsController
@@ -7,7 +8,7 @@ from pmm_backend.controllers.team_role import TeamRolesController
 from pmm_backend.controllers.workpackage import PackageController
 from pmm_backend.controllers.session import SessionController
 from pmm_backend.controllers.project import ProjectController
-from flask import redirect, request, session, escape, jsonify
+
 
 class RoutesController:
 

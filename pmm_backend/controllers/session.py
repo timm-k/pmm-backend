@@ -1,17 +1,17 @@
-from flask import jsonify, request, make_response
-from flask_bcrypt import Bcrypt
-
-from pmm_backend import api, settings, db
-from pmm_backend.models import models
 import time
 import jwt
 from functools import wraps
+from flask import jsonify, request
+from flask_bcrypt import Bcrypt
+
+from pmm_backend import api, settings
+from pmm_backend.models import models
+
 
 class SessionController():
 
     @staticmethod
     def login():
-        # creates dictionary of form data
         form_data = request.form
 
         if not form_data or not form_data.get('email') or not form_data.get('password'):
@@ -66,6 +66,7 @@ class SessionController():
                 return jsonify({'message': 'invalid token'}), 401
             # returns the current logged in users contex to the routes
             return f(current_user=current_user, *args, **kwargs)
+
         return decorated
 
     def admin_required(f):
@@ -94,4 +95,5 @@ class SessionController():
                 return "invalid token", 401
             # returns the current logged in users contex to the routes
             return f(current_user=current_user, *args, **kwargs)
+
         return decorated

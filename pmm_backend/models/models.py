@@ -1,9 +1,11 @@
-#  sqlacodegen --outfile out.py mysql://pmm:PASSWORD@git.timakramo.de:3306/pmmtest
-
 from sqlalchemy import Column, ForeignKey, Table, Text
 from sqlalchemy.dialects.mysql import INTEGER
 from sqlalchemy.orm import relationship
+
 from pmm_backend import db
+
+# generate with
+# sqlacodegen --outfile out.py mysql://pmm:PASSWORD@git.timakramo.de:3306/pmmtest
 
 metadata = db.metadata
 
@@ -96,5 +98,6 @@ class WorkPackage(db.Model):
 t_work_package_roles = Table(
     'work_package_roles', metadata,
     Column('team_role_id', ForeignKey('team_roles.team_role_id', ondelete='CASCADE', onupdate='CASCADE'), unique=True),
-    Column('work_package_id', ForeignKey('work_packages.work_package_id', ondelete='CASCADE', onupdate='CASCADE'), unique=True)
+    Column('work_package_id', ForeignKey('work_packages.work_package_id', ondelete='CASCADE', onupdate='CASCADE'),
+           unique=True)
 )

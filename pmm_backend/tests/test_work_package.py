@@ -104,7 +104,6 @@ class TestWorkPackage:
         response = client.post("/package", data=data, headers={"x-access-token": token})
         assert response.status_code == 400
 
-
     @staticmethod
     def test_remove_invalid_work_package(client, token):
         response = client.delete("/package/9999999", headers={"x-access-token": token})
