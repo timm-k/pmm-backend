@@ -20,7 +20,7 @@ class EmployeeController:
     def list_employees():
         """
         Lists all employees.
-        :return: JSON List of employees
+        :return:  List of employees in JSON format
         """
         marshaller = {
             'employee_id': fields.Integer,
@@ -56,7 +56,7 @@ class EmployeeController:
     @SessionController.login_required
     def update_employee(employee_id):
         """
-        Updates an employee.
+        Updates an existing employee.
         :param employee_id: ID of the employee
         :return: Status in JSON format
         """

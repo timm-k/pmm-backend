@@ -1,3 +1,6 @@
+"""
+    Implements the ProjectController
+"""
 import json
 from flask_restx import fields, marshal
 from flask import jsonify, request, escape
@@ -9,10 +12,17 @@ from pmm_backend.controllers.session import SessionController
 
 
 class ProjectController:
+    """
+        Project Controller Class
+    """
 
     @staticmethod
     @SessionController.login_required
-    def list_projects(**kwargs):
+    def list_projects():
+        """
+        Lists all projects.
+        :return: List of projects in JSON format
+        """
         marshaller = {
             'project_id': fields.Integer,
             'name': fields.String,
@@ -26,7 +36,11 @@ class ProjectController:
 
     @staticmethod
     @SessionController.login_required
-    def add_project(**kwargs):
+    def add_project():
+        """
+        Adds a new project.
+        :return: Status in JSON format
+        """
         name = request.form.get('name')
         description = request.form.get('description')
         start_timestamp = request.form.get('start_timestamp')
@@ -55,7 +69,11 @@ class ProjectController:
 
     @staticmethod
     @SessionController.login_required
-    def update_project(project_id, **kwargs):
+    def update_project(project_id):
+        """
+        Updates an existing project.
+        :return: Status in JSON format
+        """
         project = models.Project.query.filter_by(project_id=project_id).first()
 
         if project is None:
@@ -82,7 +100,11 @@ class ProjectController:
 
     @staticmethod
     @SessionController.login_required
-    def delete_project(project_id, **kwargs):
+    def delete_project(project_id):
+        """
+        Deletes a project.
+        :return: Status in JSON format
+        """
         project = models.Project.query.filter_by(project_id=project_id).first()
 
         if project is None:
@@ -91,5 +113,3 @@ class ProjectController:
         db.session.delete(project)
         db.session.commit()
         return jsonify('message:' 'success'), 200
-
-
