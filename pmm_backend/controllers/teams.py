@@ -1,3 +1,6 @@
+"""
+    Implements the TeamController
+"""
 import json
 from flask_restx import fields, marshal
 from flask import jsonify, request, escape
@@ -8,9 +11,16 @@ from pmm_backend.controllers.session import SessionController
 
 
 class TeamsController:
+    """
+        Teams Controller Class
+    """
     @staticmethod
     @SessionController.login_required
-    def add_team(**kwargs):
+    def add_team():
+        """
+        Adds a new team.
+        :return: Status in JSON format
+        """
         name = request.form.get('name')
         description = request.form.get('description')
 
@@ -29,7 +39,11 @@ class TeamsController:
 
     @staticmethod
     @SessionController.login_required
-    def update_team(team_id, **kwargs):
+    def update_team(team_id):
+        """
+        Updates an existing team.
+        :return: Status in JSON format
+        """
         found_team = models.Team.query.filter_by(team_id=team_id).first()
 
         if found_team is None:
@@ -48,7 +62,11 @@ class TeamsController:
 
     @staticmethod
     @SessionController.login_required
-    def delete_team(team_id, **kwargs):
+    def delete_team(team_id):
+        """
+        Deletes a team.
+        :return: Status in JSON format
+        """
         found_team = models.Team.query.filter_by(team_id=team_id).first()
 
         if found_team is None:
@@ -61,6 +79,10 @@ class TeamsController:
     @staticmethod
     @SessionController.login_required
     def list_teams(**kwargs):
+        """
+        Lists all teams.
+        :return: List of teams in JSON format
+        """
         marshaller = {
             'team_id': fields.Integer,
             'name': fields.String,

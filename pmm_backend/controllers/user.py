@@ -1,3 +1,6 @@
+"""
+    Implements the UserController
+"""
 import json
 from flask import jsonify, request, escape
 from flask_restx import fields, marshal
@@ -9,10 +12,17 @@ from pmm_backend.controllers.session import SessionController
 
 
 class UserController():
+    """
+        User Controller Class
+    """
 
     @staticmethod
     @SessionController.admin_required
-    def add_user(**kwargs):
+    def add_user():
+        """
+        Adds a new user6.
+        :return: Status in JSON format
+        """
         email = request.form.get('email')
         if email is None:
             return jsonify({'message': 'missing data: email'}), 400
@@ -42,7 +52,11 @@ class UserController():
 
     @staticmethod
     @SessionController.admin_required
-    def update_user(user_id, **kwargs):
+    def update_user(user_id):
+        """
+        Updates an existing user.
+        :return: Status in JSON format
+        """
         user = models.User.query.filter_by(user_id=user_id).first()
 
         if user is None:
@@ -74,7 +88,11 @@ class UserController():
 
     @staticmethod
     @SessionController.admin_required
-    def list_users(**kwargs):
+    def list_users():
+        """
+        Lists all users.
+        :return: List of users in JSON format
+        """
         marshaller = {
             'user_id': fields.Integer,
             'role_id': fields.Integer,
@@ -88,7 +106,11 @@ class UserController():
 
     @staticmethod
     @SessionController.admin_required
-    def delete_user(user_id, **kwargs):
+    def delete_user(user_id):
+        """
+        Deletes a user.
+        :return: Status in JSON format
+        """
         found_user = models.User.query.filter_by(user_id=user_id).first()
 
         if found_user is None:
