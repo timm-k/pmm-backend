@@ -1,3 +1,6 @@
+"""
+    Implements the PackageController
+"""
 import json
 from flask_restx import fields, marshal
 from flask import jsonify, request, escape
@@ -8,10 +11,16 @@ from pmm_backend.controllers.session import SessionController
 
 
 class PackageController:
-
+    """
+        Work Package Controller Class
+    """
     @staticmethod
     @SessionController.login_required
-    def list_packages(**kwargs):
+    def list_packages():
+        """
+        Lists all packages.
+        :return: List of packages in JSON format
+        """
         marshaller = {
             'work_package_id': fields.Integer,
             'project_id': fields.Integer,
@@ -26,8 +35,11 @@ class PackageController:
 
     @staticmethod
     @SessionController.login_required
-    def add_package(**kwargs):
-
+    def add_package():
+        """
+        Adds a new package.
+        :return: Status in JSON format
+        """
         project_id = request.form.get('project_id')
         name = request.form.get('name')
         description = request.form.get('description')
@@ -64,7 +76,11 @@ class PackageController:
 
     @staticmethod
     @SessionController.login_required
-    def update_package(work_package_id, **kwargs):
+    def update_package(work_package_id):
+        """
+        Updates an existing package.
+        :return: Status in JSON format
+        """
         package = models.WorkPackage.query.filter_by(work_package_id=work_package_id).first()
 
         if package is None:
@@ -95,7 +111,11 @@ class PackageController:
 
     @staticmethod
     @SessionController.login_required
-    def delete_package(work_package_id, **kwargs):
+    def delete_package(work_package_id):
+        """
+        Deletes a package.
+        :return: Status in JSON format
+        """
         package = models.WorkPackage.query.filter_by(work_package_id=work_package_id).first()
 
         if package is None:
