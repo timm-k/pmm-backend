@@ -1,5 +1,6 @@
-#laptop https://code-with-me.jetbrains.com/_A4KWIYF4SLM-fq3DIkGMg#p=PY&fp=79B2DFBAAF9B5B1DC312F063E4675693FBA29F96C772509F58F1D19C655E5E0C
-
+"""
+    Defines the settings
+"""
 # flask core settings
 DEBUG = True
 TESTING = True

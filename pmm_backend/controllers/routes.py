@@ -118,7 +118,7 @@ class RoutesController:
     @api.route('/team/<int:team_id>', methods=['DELETE'])
     def delete_team(team_id):
         """Adds a route for deleting teams."""
-        return TeamsController.delete_team(team_id=team_id)
+        return TeamsController.delete_team(team_id)
 
     ##########################
     # Team Roles
