@@ -1,3 +1,6 @@
+"""
+    Implements the TeamRolesController
+"""
 import json
 from flask_restx import fields, marshal
 from flask import jsonify, request, escape
@@ -8,9 +11,16 @@ from pmm_backend.controllers.session import SessionController
 
 
 class TeamRolesController:
+    """
+        Team Roles Controller Class
+    """
     @staticmethod
     @SessionController.login_required
-    def add_team_role(**kwargs):
+    def add_team_role():
+        """
+        Adds a new team role.
+        :return: Status in JSON format
+        """
         name = request.form.get('name')
         description = request.form.get('description')
 
@@ -29,7 +39,11 @@ class TeamRolesController:
 
     @staticmethod
     @SessionController.login_required
-    def update_team_role(team_role_id, **kwargs):
+    def update_team_role(team_role_id):
+        """
+        Updates an existing team role.
+        :return: Status in JSON format
+        """
         found_team_role = models.TeamRole.query.filter_by(team_role_id=team_role_id).first()
 
         if found_team_role is None:
@@ -48,7 +62,11 @@ class TeamRolesController:
 
     @staticmethod
     @SessionController.login_required
-    def delete_team_role(team_role_id, **kwargs):
+    def delete_team_role(team_role_id):
+        """
+        Deletes a team role.
+        :return: Status in JSON format
+        """
         found_team_role = models.TeamRole.query.filter_by(team_role_id=team_role_id).first()
 
         if found_team_role is None:
@@ -60,7 +78,11 @@ class TeamRolesController:
 
     @staticmethod
     @SessionController.login_required
-    def list_team_roles(**kwargs):
+    def list_team_roles():
+        """
+        Lists all team roles.
+        :return: List of team roles in JSON format
+        """
         marshaller = {
             'team_role_id': fields.Integer,
             'name': fields.String,
