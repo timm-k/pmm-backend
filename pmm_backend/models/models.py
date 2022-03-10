@@ -1,11 +1,13 @@
+"""
+    Implements the Model used for the database
+    Auto-generated with sqlacodegen --outfile out.py mysql://user:pass@hostname:3306/dbname
+"""
 from sqlalchemy import Column, ForeignKey, Table, Text
 from sqlalchemy.dialects.mysql import INTEGER
 from sqlalchemy.orm import relationship
 
 from pmm_backend import db
 
-# generate with
-# sqlacodegen --outfile out.py mysql://pmm:PASSWORD@git.timakramo.de:3306/pmmtest
 
 metadata = db.metadata
 
