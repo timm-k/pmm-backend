@@ -1,6 +1,9 @@
+"""
+    Implements the SessionController
+"""
 import time
-import jwt
 from functools import wraps
+import jwt
 from flask import jsonify, request
 from flask_bcrypt import Bcrypt
 
@@ -9,9 +12,15 @@ from pmm_backend.models import models
 
 
 class SessionController():
-
+    """
+        Session Controller Class
+    """
     @staticmethod
     def login():
+        """
+        Try to login with the given data.
+        :return: Login status and token in JSON format
+        """
         form_data = request.form
 
         if not form_data or not form_data.get('email') or not form_data.get('password'):
@@ -41,9 +50,13 @@ class SessionController():
 
         return jsonify({'message': 'invalid password'}), 401
 
+    @staticmethod
     def login_required(f):
+        """
+        Requires a valid login
+        """
         @wraps(f)
-        def decorated(*args, **kwargs):
+        def decorated(*args):
             token = None
             # jwt is passed in the request header
             if 'x-access-token' in request.headers:
@@ -69,9 +82,13 @@ class SessionController():
 
         return decorated
 
+    @staticmethod
     def admin_required(f):
+        """
+        Requires a valid admin login
+        """
         @wraps(f)
-        def decorated(*args, **kwargs):
+        def decorated(*args):
             token = None
             # jwt is passed in the request header
             if 'x-access-token' in request.headers:
@@ -90,8 +107,7 @@ class SessionController():
                 if current_timestamp > expire_timestamp:
                     return jsonify({'message': 'invalid token'}), 401
 
-            except Exception as e:
-                print(e)
+            except Exception:
                 return "invalid token", 401
             # returns the current logged in users contex to the routes
             return f(current_user=current_user, *args)
